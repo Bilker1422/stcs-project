@@ -1,0 +1,21 @@
+curl --location 'https://hook.eu2.make.com/nq85l9l51zfi16tidx4me9okwjcgv8hd' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: __cf_bm=9OxLwT2V6vBycZVvBEp8Ki1JHgf7HehUniOzdQDXPjo-1732818979-1.0.1.1-w9yN_3to74vfH1hgcbsJKryHnkfqh_rx5KkTi9kNZ32FP3sdz5iwVXCFwjm9i2asBTktdEzfeMcmxR909Hi5GQ' \
+--data-raw '{
+ "product": {
+   "name": "Smart Fitness Watch Pro",
+   "description": "Advanced fitness tracker with heart rate monitoring, sleep tracking, and 7-day battery life", 
+   "price": 199.99
+ },
+ "customers": [
+   {
+     "name": "Yahya",
+     "email": "yahyaksa28@gmail.com",
+     "preferences": ["fitness", "technology", "health", "cooking"]
+   }
+ ],
+ "sender": {
+   "companyName": "TechFit Store",
+   "fromEmail": "sales@techfitstore.com"
+ }
+}'

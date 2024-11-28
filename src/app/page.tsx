@@ -1,101 +1,156 @@
-import Image from "next/image";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ExcelUpload } from "@/components/excel-upload";
+import { SenderForm } from "@/components/sender-form";
+import { ProductForm } from "@/components/product-form";
+import { CustomerForm } from "@/components/customer-form";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [formData, setFormData] = useState({
+    product: {
+      name: "",
+      description: "",
+      price: "",
+    },
+    customers: [],
+    sender: {
+      companyName: "",
+      fromEmail: "",
+    },
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
+  const [showAddCustomer, setShowAddCustomer] = useState(false);
+
+  const handleFormChange = (section: string, data: any) => {
+    setFormData((prev) => ({ ...prev, [section]: data }));
+  };
+
+  const handleCustomerUpload = (customers: any[]) => {
+    setFormData((prev) => ({ ...prev, customers }));
+    setIsFileUploaded(true);
+  };
+
+  const handleAddCustomer = (customer: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      customers: [...prev.customers, customer],
+    }));
+    setShowAddCustomer(false);
+  };
+
+  const handleRemoveCustomer = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      customers: prev.customers.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await fetch("https://hook.eu2.make.com/nq85l9l51zfi16tidx4me9okwjcgv8hd", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader>
+          <CardTitle>Product and Customer Information</CardTitle>
+          <CardDescription>
+            Please fill out the following information
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <ProductForm
+              product={formData.product}
+              onChange={(data) => handleFormChange("product", data)}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <SenderForm
+              sender={formData.sender}
+              onChange={(data) => handleFormChange("sender", data)}
+            />
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Customer Information</h2>
+              <ExcelUpload onUpload={handleCustomerUpload} />
+              {isFileUploaded ? (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Uploaded Customers</h3>
+                </div>
+              ) : (
+                <>
+                  {showAddCustomer ? (
+                    <CustomerForm
+                      onSubmit={handleAddCustomer}
+                      onCancel={() => setShowAddCustomer(false)}
+                    />
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={() => setShowAddCustomer(true)}
+                      variant="outline"
+                    >
+                      Add Customer
+                    </Button>
+                  )}
+                </>
+              )}
+              {formData.customers.map((customer, index) => (
+                <div key={index} className="p-4 border rounded space-y-2">
+                  <p>
+                    <strong>Name:</strong> {customer.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {customer.email}
+                  </p>
+                  <p>
+                    <strong>Preferences:</strong>{" "}
+                    {customer.preferences.join(", ")}
+                  </p>
+                  <Button
+                    variant="destructive"
+                    onClick={() => handleRemoveCustomer(index)}
+                    size="sm"
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <Button type="submit" className="w-full">
+              Submit
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
