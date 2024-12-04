@@ -73,6 +73,21 @@ export default function Home() {
       })
       .then((data) => {
         console.log("Success:", data);
+        setFormData({
+          product: {
+            name: "",
+            description: "",
+            price: "",
+          },
+          customers: [],
+          sender: {
+            companyName: "",
+            fromEmail: "",
+          },
+        });
+        setIsFileUploaded(false);
+        setShowAddCustomer(false);
+
       })
       .catch((error) => {
         console.error("Error:", error);
